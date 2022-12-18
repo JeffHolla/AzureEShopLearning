@@ -30,7 +30,6 @@ jobs:
         run: pwd
 
       - name: check env
-        #run: ls -Rla
         run: echo ${{env.DOTNET_ROOT}}
 
       - name: dotnet publish
@@ -61,5 +60,5 @@ jobs:
         with:
           app-name: 'EShopWebApp1'
           slot-name: 'production'
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_a7a83e02a993461fa3896cb2db354c7b }}
+          publish-profile: ${{ secrets.EShopWebApp1_Secret }}
           package: .
