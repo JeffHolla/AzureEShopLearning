@@ -26,7 +26,7 @@ jobs:
         run: dotnet build eShopOnWeb.sln --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish ${{env.DOTNET_ROOT}}/src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ${{env.DOTNET_ROOT}}/myapp/src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
