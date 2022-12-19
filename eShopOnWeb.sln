@@ -24,8 +24,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0BD72BEA-EF42-4B72-8B69-12A39EC76FBA}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.github\workflows\deployDoc.yml = .github\workflows\deployDoc.yml
 		docker-compose.override.yml = docker-compose.override.yml
-		deployDoc.yml = deployDoc.yml
 		docker-compose.yml = docker-compose.yml
 		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		README.md = README.md

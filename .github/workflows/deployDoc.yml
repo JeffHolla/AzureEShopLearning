@@ -37,8 +37,8 @@ jobs:
       - name: dotnet publish web-app
         run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webApp
 
-      - name: dotnet publish
-        run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webAPI
+      - name: dotnet publish web-api
+        run: dotnet publish ./src/PublicApi/PublicApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/webAPI
 
       - name: Upload web-app artifact for deployment job
         uses: actions/upload-artifact@v2
