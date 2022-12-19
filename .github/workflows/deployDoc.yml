@@ -33,15 +33,15 @@ jobs:
         run: echo ${{env.DOTNET_ROOT}}
 
       - name: dotnet publish
-        run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webApp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          name: .web-app
+          path: ${{env.DOTNET_ROOT}}/webApp
 
-  deploy:
+  deploy-web:
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -52,13 +52,22 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .net-app
+          name: .web-app
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
+      - name: Deploy to Azure Web App (first)
+        id: deploy-to-webapp-1
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'EShopWebApp1'
           slot-name: 'production'
           publish-profile: ${{ secrets.EShopWebApp1_Secret }}
+          package: .
+
+      - name: Deploy to Azure Web App (second)
+        id: deploy-to-webapp-2
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'EShopWebApp2'
+          slot-name: 'production'
+          publish-profile: ${{ secrets.EShopWebApp2_Secret }}
           package: .
