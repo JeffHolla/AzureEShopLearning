@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: tree
+        run: tree
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -49,19 +52,21 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: get all dirs from current before downloading webapp
+        run: ls -Rla
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: .web-app
 
-      - name: check env
-        run: echo ${{env.DOTNET_ROOT}}
+      - name: check url
+        run: echo ${{ steps.deploy-to-webapp.outputs.webapp-url }}
         
       - name: check pwd
-        #run: ls -Rla
         run: pwd
 
-      - name: get all dirs from current
+      - name: get all dirs from current after downloading webapp
         run: ls -Rla
 
       - name: Deploy to Azure Web App (first)
