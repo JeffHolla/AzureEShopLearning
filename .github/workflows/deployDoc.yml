@@ -85,7 +85,7 @@ jobs:
         id: deploy-to-webapp-1
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'EShopWebApp1'
+          app-name: 'EShopWebApp-1'
           slot-name: 'production'
           publish-profile: ${{ secrets.EShopWebApp1_Secret }}
           package: .
@@ -94,7 +94,7 @@ jobs:
         id: deploy-to-webapp-2
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'EShopWebApp2'
+          app-name: 'EShopWebApp-2'
           slot-name: 'production'
           publish-profile: ${{ secrets.EShopWebApp2_Secret }}
           package: .
@@ -132,7 +132,7 @@ jobs:
         id: deploy-to-webapi
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'EShopWebAPI-Single'
+          app-name: 'EShopWebAPI-Single-1'
           slot-name: 'production'
           publish-profile: ${{ secrets.EShopWebAPI_Secret }}
           package: .
