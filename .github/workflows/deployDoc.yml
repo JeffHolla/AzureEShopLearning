@@ -54,6 +54,16 @@ jobs:
         with:
           name: .web-app
 
+      - name: check env
+        run: echo ${{env.DOTNET_ROOT}}
+        
+      - name: check pwd
+        #run: ls -Rla
+        run: pwd
+
+      - name: get all dirs from current
+        run: ls -Rla
+
       - name: Deploy to Azure Web App (first)
         id: deploy-to-webapp-1
         uses: azure/webapps-deploy@v2
