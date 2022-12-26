@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using BlazorShared.Models;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 
@@ -30,6 +31,9 @@ public class ExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        var appInsights = new TelemetryClient();
+        appInsights.TrackException(exception);
+
         context.Response.ContentType = "application/json";
 
         if (exception is DuplicateException duplicationException)
