@@ -44,6 +44,8 @@ public class CatalogItemListPagedEndpoint : IEndpoint<IResult, ListPagedCatalogI
 
     public async Task<IResult> HandleAsync(ListPagedCatalogItemRequest request)
     {
+        throw new Exception("Cannot move further");
+
         var response = new ListPagedCatalogItemResponse(request.CorrelationId());
 
         // BrandIDs  - 2, 5
