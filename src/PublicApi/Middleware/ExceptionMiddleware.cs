@@ -5,16 +5,21 @@ using BlazorShared.Models;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Http;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.eShopWeb.PublicApi.Middleware;
 
 public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
+    public ILogger<Program> _logger { get; set; }
+    public TelemetryClient _client { get; set; }
 
-    public ExceptionMiddleware(RequestDelegate next)
+    public ExceptionMiddleware(RequestDelegate next, ILogger<Program> logger, TelemetryClient client)
     {
         _next = next;
+        _logger = logger;
+        _client = client;
     }
 
     public async Task InvokeAsync(HttpContext httpContext)
@@ -31,8 +36,8 @@ public class ExceptionMiddleware
 
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var appInsights = new TelemetryClient();
-        appInsights.TrackException(exception);
+        _logger.LogCritical(exception.Message, exception.StackTrace);
+        _client.TrackException(exception);
 
         context.Response.ContentType = "application/json";
 

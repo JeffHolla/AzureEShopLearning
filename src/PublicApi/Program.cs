@@ -27,6 +27,8 @@ using MinimalApi.Endpoint.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+throw new Exception("Cannot move further");
+
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddEndpoints();
