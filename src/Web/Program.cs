@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.eShopWeb;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Settings;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web;
@@ -43,6 +44,10 @@ builder.Services.AddScoped<ITokenClaimsService, IdentityTokenClaimService>();
 builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddWebServices(builder.Configuration);
 
+
+var orderItemConfigSection = builder.Configuration.GetSection("OrderItemReserverFunctionSettings");
+builder.Services.Configure<OrderItemReserverFunctionSettings>(orderItemConfigSection);
+
 // Add memory cache services
 builder.Services.AddMemoryCache();
 builder.Services.AddRouting(options =>
@@ -68,6 +73,7 @@ builder.Services
     .AddHealthChecks()
     .AddCheck<ApiHealthCheck>("api_health_check", tags: new[] { "apiHealthCheck" })
     .AddCheck<HomePageHealthCheck>("home_page_health_check", tags: new[] { "homePageHealthCheck" });
+
 builder.Services.Configure<ServiceConfig>(config =>
 {
     config.Services = new List<ServiceDescriptor>(builder.Services);
@@ -94,6 +100,10 @@ builder.Services.AddBlazorServices();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddAzureFunctions(builder.Configuration);
+
+
+// App request pipeline
 var app = builder.Build();
 
 app.Logger.LogInformation("App created...");
