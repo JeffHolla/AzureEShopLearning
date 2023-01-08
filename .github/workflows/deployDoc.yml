@@ -37,73 +37,26 @@ jobs:
       - name: dotnet publish web-app
         run: dotnet publish ./src/Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/webApp
 
-      - name: dotnet publish web-api
-        run: dotnet publish ./src/PublicApi/PublicApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/webAPI
+      #- name: dotnet publish web-api
+      #  run: dotnet publish ./src/PublicApi/PublicApi.csproj -c Release -o ${{env.DOTNET_ROOT}}/webAPI
 
-      #- name: Upload web-app artifact for deployment job
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: .web-app
-      #    path: ${{env.DOTNET_ROOT}}/webApp
-
-      - name: Upload web-api artifact for deployment job
+      - name: Upload web-app artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: .web-api
-          path: ${{env.DOTNET_ROOT}}/webAPI
+          name: .web-app
+          path: ${{env.DOTNET_ROOT}}/webApp
 
-  #deploy-web:
-  #  runs-on: ubuntu-latest
-  #  needs: build
-  #  environment:
-  #    name: 'production'
-  #    url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      #- name: Upload web-api artifact for deployment job
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: .web-api
+      #    path: ${{env.DOTNET_ROOT}}/webAPI
 
-  #  steps:
-  #      # Tests
-  #    - name: get all dirs from current before downloading webapp
-  #      run: ls -Rla
-
-  #    - name: Download artifact from build job
-  #      uses: actions/download-artifact@v2
-  #      with:
-  #        name: .web-app
-          
-  #      # Tests
-  #    - name: check url
-  #      run: echo ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-        
-  #      # Tests
-  #    - name: check pwd
-  #      run: pwd
-        
-  #      # Tests
-  #    - name: get all dirs from current after downloading webapp
-  #      run: ls -Rla
-
-  #    - name: Deploy to Azure Web App (first)
-  #      id: deploy-to-webapp-1
-  #      uses: azure/webapps-deploy@v2
-  #      with:
-  #        app-name: 'EShopWebApp-1'
-  #        slot-name: 'production'
-  #        publish-profile: ${{ secrets.EShopWebApp1_Secret }}
-  #        package: .
-
-  #    - name: Deploy to Azure Web App (second)
-  #      id: deploy-to-webapp-2
-  #      uses: azure/webapps-deploy@v2
-  #      with:
-  #        app-name: 'EShopWebApp-2'
-  #        slot-name: 'production'
-  #        publish-profile: ${{ secrets.EShopWebApp2_Secret }}
-  #        package: .
-
-  deploy-api:
+  deploy-web:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'development'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -114,7 +67,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .web-api
+          name: .web-app
           
         # Tests
       - name: check url
@@ -128,11 +81,58 @@ jobs:
       - name: get all dirs from current after downloading webapp
         run: ls -Rla
 
-      - name: Deploy to Azure Web API project
-        id: deploy-to-webapi
+      - name: Deploy to Azure Web App (first)
+        id: deploy-to-webapp-1
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'EShopWebAPI-Single-1'
+          app-name: 'EShopWebApp-1'
           slot-name: 'production'
-          publish-profile: ${{ secrets.EShopWebAPI_Secret }}
+          publish-profile: ${{ secrets.EShopWebApp1_Secret }}
           package: .
+
+      #- name: Deploy to Azure Web App (second)
+      #  id: deploy-to-webapp-2
+      #  uses: azure/webapps-deploy@v2
+      #  with:
+      #    app-name: 'EShopWebApp-2'
+      #    slot-name: 'production'
+      #    publish-profile: ${{ secrets.EShopWebApp2_Secret }}
+      #    package: .
+
+  #deploy-api:
+  #  runs-on: ubuntu-latest
+  #  needs: build
+  #  environment:
+  #    name: 'development'
+  #    url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+  #  steps:
+  #      # Tests
+  #    - name: get all dirs from current before downloading webapp
+  #      run: ls -Rla
+
+  #    - name: Download artifact from build job
+  #      uses: actions/download-artifact@v2
+  #      with:
+  #        name: .web-api
+          
+  #      # Tests
+  #    - name: check url
+  #      run: echo ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+        
+  #      # Tests
+  #    - name: check pwd
+  #      run: pwd
+        
+  #      # Tests
+  #    - name: get all dirs from current after downloading webapp
+  #      run: ls -Rla
+
+  #    - name: Deploy to Azure Web API project
+  #      id: deploy-to-webapi
+  #      uses: azure/webapps-deploy@v2
+  #      with:
+  #        app-name: 'EShopWebAPI-Single-1'
+  #        slot-name: 'production'
+  #        publish-profile: ${{ secrets.EShopWebAPI_Secret }}
+  #        package: .
