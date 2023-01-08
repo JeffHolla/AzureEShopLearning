@@ -1,4 +1,5 @@
 ﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Settings;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Services;
 
