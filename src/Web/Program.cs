@@ -102,6 +102,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddAzureFunctions(builder.Configuration);
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 
 // App request pipeline
 var app = builder.Build();
