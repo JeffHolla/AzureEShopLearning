@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,9 @@ namespace Microsoft.eShopWeb.Infrastructure;
 
 public static class Dependencies
 {
+    const string CatalogConnection = "CatalogConnection";
+    const string IdentityConnection = "IdentityConnection";
+
     public static void ConfigureServices(IConfiguration configuration, IServiceCollection services)
     {
         var useOnlyInMemoryDatabase = false;
@@ -26,15 +30,23 @@ public static class Dependencies
         }
         else
         {
+            var catalogConStr = configuration.GetConnectionString(CatalogConnection);
+            Console.WriteLine("CatalogConnection");
+            Console.WriteLine(catalogConStr);
+
+            var identityConStr = configuration.GetConnectionString(IdentityConnection);
+            Console.WriteLine("IdentityConnection");
+            Console.WriteLine(identityConStr);
+
             // use real database
             // Requires LocalDB which can be installed with SQL Server Express 2016
             // https://www.microsoft.com/en-us/download/details.aspx?id=54284
             services.AddDbContext<CatalogContext>(c =>
-                c.UseSqlServer(configuration.GetConnectionString("CatalogConnection")));
+                c.UseSqlServer(catalogConStr));
 
             // Add Identity DbContext
             services.AddDbContext<AppIdentityDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
+                options.UseSqlServer(identityConStr));
         }
     }
 }
