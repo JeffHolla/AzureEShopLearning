@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Azure.Messaging.ServiceBus;
 using Microsoft.ApplicationInsights;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
@@ -22,6 +23,8 @@ public class OrderService : IOrderService
     private readonly IUriComposer _uriComposer;
     private readonly IRepository<Basket> _basketRepository;
     private readonly IRepository<CatalogItem> _itemRepository;
+    //private readonly ServiceBusClient _serviceBusClient;
+    private readonly ServiceBusSender _serviceBusSender;
 
     private readonly OrderItemReserverFunctionSettings _orderItemReserver;
 
@@ -35,7 +38,9 @@ public class OrderService : IOrderService
         IUriComposer uriComposer,
         OrderItemReserverFunctionSettings orderItemReserver,
         ILogger<OrderService> logger,
-        TelemetryClient telemetry = null)
+        TelemetryClient telemetry = null,
+        //ServiceBusClient serviceBusClient = null,
+        ServiceBusSender serviceBusSender = null)
     {
         _orderRepository = orderRepository;
         _uriComposer = uriComposer;
@@ -44,6 +49,8 @@ public class OrderService : IOrderService
         _orderItemReserver = orderItemReserver;
         _logger = logger;
         _telemetry = telemetry;
+        //_serviceBusClient = serviceBusClient;
+        _serviceBusSender = serviceBusSender;
     }
 
     public async Task CreateOrderAsync(int basketId, Address shippingAddress)
@@ -75,6 +82,8 @@ public class OrderService : IOrderService
         _telemetry?.TrackEvent(orderJson);
         _logger.LogInformation(orderJson);
 
-        await new HttpClient().PostAsJsonAsync($"{_orderItemReserver.Url}?{_orderItemReserver.Key}", order, webJsonOptions);
+
+        //var message = new ServiceBusMessage(orderJson);
+        //await _serviceBusSender.SendMessageAsync(message);
     }
 }
