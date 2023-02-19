@@ -23,3 +23,16 @@
 #      - SA_PASSWORD=@someThingComplicated1234
 #      - ACCEPT_EULA=Y
 
+version: '3.4'
+
+services:
+  eshopwebmvc:
+    image: ${DOCKER_REGISTRY-}eshopwebmvc
+    build:
+      context: .
+      dockerfile: src/Web/Dockerfile
+  eshoppublicapi:
+    image: ${DOCKER_REGISTRY-}eshoppublicapi
+    build:
+      context: .
+      dockerfile: src/PublicApi/Dockerfile
