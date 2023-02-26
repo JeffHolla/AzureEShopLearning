@@ -15,13 +15,14 @@ using Microsoft.eShopWeb;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Settings;
 using Microsoft.eShopWeb.Infrastructure.Data;
+using Microsoft.eShopWeb.Infrastructure.GenericDependencies;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web;
 using Microsoft.eShopWeb.Web.Configuration;
 using Microsoft.eShopWeb.Web.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-internal class Program
+public class Program
 {
     private static async Task Main(string[] args)
     {
@@ -29,32 +30,16 @@ internal class Program
 
         builder.Logging.AddConsole();
 
-        Microsoft.eShopWeb.Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Services);
+        AddAzureServices(builder.Services, builder.Configuration, builder.Host);
+
+        DatabaseDependencies.ConfigureDatabasesServices(builder.Configuration, builder.Services);
 
         builder.Services.AddCoreServices(builder.Configuration);
         builder.Services.AddWebServices(builder.Configuration);
 
-        //builder.Host.ConfigureAppConfiguration(config =>
-        //{
-        //    var builtConfig = config.Build();
-        //    Console.WriteLine("Debug views - ");
-        //    Console.WriteLine(builtConfig.GetDebugView());
-
-        //    //// Use VaultName from the configuration to create the full vault URI.
-        //    var vaultName = builtConfig["VaultName"];
-        //    Uri vaultUri = new Uri($"https://{vaultName}.vault.azure.net/");
-
-        //    //// Load all secrets from the vault into configuration. This will automatically
-        //    //// authenticate to the vault using a managed identity. If a managed identity
-        //    //// is not available, it will check if Visual Studio and/or the Azure CLI are
-        //    //// installed locally and see if they are configured with credentials that can
-        //    //// access the vault.
-        //    config.AddAzureKeyVault(vaultUri, new DefaultAzureCredential());
-        //});
+        AddAzureServices(builder.Services, builder.Configuration, builder.Host);
 
         AddWebAndDatabaseServices(builder.Services, builder.Configuration);
-
-        AddAzureServices(builder.Services, builder.Configuration);
 
         await RunApp(builder);
     }
@@ -153,11 +138,11 @@ internal class Program
         app.Run();
     }
 
-    private static void AddAzureServices(IServiceCollection services, IConfiguration configuration)
+    private static void AddAzureServices(IServiceCollection services, IConfiguration configuration, IHostBuilder hostBuilder)
     {
-        services.AddAzureFunctions(configuration);
+        AzureDependencies.AddGenericAzureServices(services, hostBuilder);
 
-        services.AddApplicationInsightsTelemetry();
+        services.AddAzureFunctions(configuration);
 
         //builder.Services.AddSingleton<ServiceBusClient> // We can create ServiceBusClient for injection using same way
         //services.AddScoped<ServiceBusSender>(options =>
