@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Azure.Messaging.ServiceBus;
 using Microsoft.ApplicationInsights;
+using Microsoft.eShopWeb.ApplicationCore.Clients.FunctionClients;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Settings;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +26,7 @@ public class OrderService : IOrderService
     //private readonly ServiceBusClient _serviceBusClient;
     private readonly ServiceBusSender _serviceBusSender;
 
-    private readonly OrderItemReserverFunctionSettings _orderItemReserver;
+    private readonly OrderItemReserver _orderItemReserver;
 
     private TelemetryClient _telemetry;
 
@@ -36,7 +36,7 @@ public class OrderService : IOrderService
         IRepository<CatalogItem> itemRepository,
         IRepository<Order> orderRepository,
         IUriComposer uriComposer,
-        OrderItemReserverFunctionSettings orderItemReserver,
+        OrderItemReserver orderItemReserver,
         ILogger<OrderService> logger,
         TelemetryClient telemetry = null,
         //ServiceBusClient serviceBusClient = null,
@@ -82,6 +82,7 @@ public class OrderService : IOrderService
         _telemetry?.TrackEvent(orderJson);
         _logger.LogInformation(orderJson);
 
+        await _orderItemReserver.PostAsJsonAsync(order);
 
         //var message = new ServiceBusMessage(orderJson);
         //await _serviceBusSender.SendMessageAsync(message);

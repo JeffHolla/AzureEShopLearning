@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.eShopWeb;
+using Microsoft.eShopWeb.ApplicationCore.Clients.FunctionClients;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Settings;
 using Microsoft.eShopWeb.Infrastructure.Data;
 using Microsoft.eShopWeb.Infrastructure.GenericDependencies;
 using Microsoft.eShopWeb.Infrastructure.Identity;
@@ -142,7 +142,8 @@ public class Program
     {
         AzureDependencies.AddGenericAzureServices(services, hostBuilder);
 
-        services.AddAzureFunctions(configuration);
+        services.AddSingleton<OrderItemReserver>(new OrderItemReserver(configuration));
+        services.AddSingleton<DeliveryOrderProcessor>(new DeliveryOrderProcessor(configuration));
 
         //builder.Services.AddSingleton<ServiceBusClient> // We can create ServiceBusClient for injection using same way
         //services.AddScoped<ServiceBusSender>(options =>
