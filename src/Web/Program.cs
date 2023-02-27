@@ -142,21 +142,23 @@ public class Program
     {
         AzureDependencies.AddGenericAzureServices(services, hostBuilder);
 
+        // Or does it makes sense to use Scoped services?
         services.AddSingleton<OrderItemReserver>(new OrderItemReserver(configuration));
         services.AddSingleton<DeliveryOrderProcessor>(new DeliveryOrderProcessor(configuration));
 
-        //builder.Services.AddSingleton<ServiceBusClient> // We can create ServiceBusClient for injection using same way
-        //services.AddScoped<ServiceBusSender>(options =>
-        //{
-        //    var config = options.GetService<IConfiguration>();
+        //services.AddSingleton<ServiceBusClient> // We can create ServiceBusClient for injection using same way
+        services.AddSingleton<ServiceBusSender>(options =>
+        {
+            var config = options.GetService<IConfiguration>();
 
-        //    var serviceBusConnectionStr = config.GetConnectionString("ServiceBusConnection");
-        //    var queueName = config.GetSection("OrdersQueueName").Value;
+            var serviceBusOptions = config.GetRequiredSection("ServiceBusOptions");
+            var serviceBusConnectionStr = serviceBusOptions.GetRequiredSection("ConnectionString").Value;
+            var queueName = serviceBusOptions.GetRequiredSection("QueueName").Value;
 
-        //    var serviceBusClient = new ServiceBusClient(serviceBusConnectionStr);
+            var serviceBusClient = new ServiceBusClient(serviceBusConnectionStr);
 
-        //    return serviceBusClient.CreateSender(queueName);
-        //});
+            return serviceBusClient.CreateSender(queueName);
+        });
     }
 
     private static void AddWebAndDatabaseServices(IServiceCollection services, IConfiguration configuration)

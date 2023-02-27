@@ -9,10 +9,10 @@ namespace EShopOrdersFunction.Helpers.ResourceConnections
 {
     public static class BlobConnections
     {
-        public static async Task<BlobClient> GetBlobClient(string blobName)
+        public static async Task<BlobClient> GetBlobClient(string blobName, string containerName = null, string storageConnectionString = null)
         {
-            string storageConnectionString = Environment.GetEnvironmentVariable("BlobStorageConnectionString");
-            string containerName = Environment.GetEnvironmentVariable("ContainerName");
+            storageConnectionString ??= Environment.GetEnvironmentVariable("BlobStorageConnectionString");
+            containerName ??= Environment.GetEnvironmentVariable("ContainerName");
 
             if (string.IsNullOrEmpty(storageConnectionString) || string.IsNullOrEmpty(containerName))
             {

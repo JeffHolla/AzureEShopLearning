@@ -84,7 +84,7 @@ public class OrderService : IOrderService
 
         await _orderItemReserver.PostAsJsonAsync(order);
 
-        //var message = new ServiceBusMessage(orderJson);
-        //await _serviceBusSender.SendMessageAsync(message);
+        var message = new ServiceBusMessage(orderJson);
+        await _serviceBusSender.SendMessageAsync(message);
     }
 }
